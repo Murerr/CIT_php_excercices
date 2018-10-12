@@ -1,24 +1,23 @@
 #!/usr/bin/php
 <?php
-function good_ppnn($argv){
+function good_ppns($argv){
 	$ppnn_number = $argv[1]; // get argument from Linux console
-	$array_ppnn = str_split($ppnn_number); //split each character into a array
-	$check_letter_start_at = 1;
-	if(sizeof($array_ppnn)>9 || sizeof($array_ppnn)<8 ){
+	$ppsn_array = str_split($ppnn_number); //split each character into a array
+	$starting_check_letter = 1; // To skip the first letter
+	if(sizeof($ppsn_array)>9 || sizeof($ppsn_array)<8 ){
 		echo "Invalid PPNN NUmber\n";
 		return false;
 	}
 
-	if(sizeof($array_ppnn) == 9){// -> New ppnn Number
-		$check_letter_start_at = 2;
+	if(sizeof($ppsn_array) == 9){// -> New ppnn Number
+		$starting_check_letter = 2;
 	} 
-	
+
 	$res = 0;
-	$reversed_array_ppnn = array_reverse($array_ppnn); // reverse my array 1234567FA -> AF7654321
-	for($i = $check_letter_start_at;$i < sizeof($reversed_array_ppnn); $i++){ // for start at 1 or 1  to skip the letters
-		$weight = (2+$i)-$check_letter_start_at; 				// 7*2	+ 6*3 + 5*4 + .... 
-		$res += (int)$reversed_array_ppnn[$i] * $weight;
-		echo $res,"\n";
+	$reversed_ppsn_array = array_reverse($ppsn_array); // reverse my array 1234567FA -> AF7654321
+	for($i = $starting_check_letter;$i < sizeof($reversed_ppsn_array); $i++){ // for start at 1 or 1  to skip the letters
+		$weight = (2+$i)-$starting_check_letter; 				// 7*2	+ 6*3 + 5*4 + .... 
+		$res += (int)$reversed_ppsn_array[$i] * $weight;
 	}
 		$alphabet = array(
 	'W'=>	0,
@@ -48,40 +47,28 @@ function good_ppnn($argv){
 	'Y'=>	24,
 	'Z'=>	25);
 	
-	$ppnn_letter = strtoupper($reversed_array_ppnn[0]); // where the letter is now 
-	if(sizeof($array_ppnn) == 8){
-		$expected_letter = array_search ($res%23, $alphabet);
-		var_dump($ppnn_letter);
-		if($ppnn_letter == $expected_letter){ // T
+	$ppns_letter = strtoupper($reversed_ppsn_array[0]); // where the letter is now 
+	if(sizeof($ppsn_array) == 8){
+		$check_letter = array_search ($res%23, $alphabet);
+		if($ppns_letter == $check_letter){ // T -> 1234567T
 			echo"True by 8\n";
 			return true;
 		} 
-	} else{
-		$res += $alphabet[$ppnn_letter]*9; // else multiply the letter by 9 
-		$expected_letter = array_search ($res%23, $alphabet);
-		if($reversed_array_ppnn[1] == $expected_letter ){
-			echo"True by 8\n";
+	} else if(sizeof($ppsn_array) == 9){ // 1234567FA
+		$res += $alphabet[$ppns_letter]*9; // else multiply the letter by 9 
+		$check_letter = array_search ($res%23, $alphabet);
+		if($reversed_ppsn_array[1] == $check_letter ){ // check if the the second letter is correct
+			echo"True by 9\n";
 			return true;
 		}
 	}
+
+	echo"FALSE";
+	return false;
 	
-	
-
-	/*
-	for($i =65;$i < 65+26; $i++){
-		echo chr($i),"=>\n";
-	}*/
-	
-	//var_dump($alphabet);
-	
-	//$res = $res%23;
-	//var_dump($res);
-
-
-
-
 }
-good_ppnn($argv);
+good_ppns($argv);
+
 ?>
 
     
