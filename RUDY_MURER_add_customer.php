@@ -9,7 +9,7 @@ td {
 </style>
 </head>
 <body>
-<h1>Connecting to the Db</h1>
+<h1>Adding User to the Db</h1>
 <form action="" method="post">
     Name: <input type="text" name="name" required><br>
     Surname: <input type="text" name="surname" required><br>
@@ -30,8 +30,9 @@ if(isset($_POST['SubmitButton'])){
     $phone = (string)$_POST['phone']; 
     $date = $_POST['date'];  
     $customerData = [$name,$surname,$phone,$date];
-    insertUserIntoDB($dbc,$customerData);
-
+    if(!UserAlreadyExist($dbc,$customerData)){
+        insertUserIntoDB($dbc,$customerData);    
+    }
 } 
 
 function connenctToDB(){    
@@ -71,20 +72,28 @@ function insertUserIntoDB($dbc,$customerData){
     }
 }
 
+function UserAlreadyExist($dbc,$customerData){
+   
+    $sql = "SELECT * FROM `customers` WHERE `sname` = '$customerData[1]' AND `tel` = '$customerData[2]' ";
+    $r = mysqli_query($dbc, $sql);
+    
+    if (!($r)){
+        echo "Can not acces Database !\n" . mysqli_error($dbc) . "<br/>";
+    } else {
+        if (mysqli_num_rows($r) == 0) {
+            echo "This user do not exist yet\n"; 
+            return false;
+        }
+        echo "This user already exist with the same phone number\n"; 
+        return true;
+    }
 
-
-
-
-
-
+}
 
 mysqli_close($dbc);
 
-
-
-
 ?>
-
+<br/>
 Have a nice day.
 
 </body>
